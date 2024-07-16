@@ -4,4 +4,4 @@ ipykernel
 selenium
 beautifulsoup4
 requests
-python-dotenv
+google-cloud-storage
