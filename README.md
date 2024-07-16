@@ -14,3 +14,6 @@ $ python "app.py"
 
 Source code and approach for scraping: 
 https://medium.com/@alaeddine.grine/linkedin-job-scraper-and-matcher-85d0308ef9aa 
+
+used skills file from: 
+https://raw.githubusercontent.com/kingabzpro/jobzilla_ai/main/jz_skill_patterns.jsonl

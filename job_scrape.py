@@ -11,7 +11,7 @@ import os
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-list_url = "https://www.linkedin.com/jobs/search/?keywords=Data%20Engineer%20Oslo%20&location=Oslo%2C%20Norway&geoId=105719246&f_TPR=r86400&position=1&pageNum=0"
+list_url = "https://www.linkedin.com/jobs/search/?keywords=Data%20Engineer%20&location=Oslo%2C%20Norway&geoId=105719246&f_TPR=r86400&position=1&pageNum=0"
 response = requests.get(list_url)
 list_data = response.text
 soup = BeautifulSoup(list_data, 'html.parser')
@@ -67,7 +67,7 @@ def upload_blob(bucket_name, source_file_name, destination_blob_name):
     blob.upload_from_filename(source_file_name) 
     print( f"File {source_file_name} uploaded to {destination_blob_name}." ) 
     
-source_file_name = "jobs.csv" 
+source_file_name = ".jobs.csv" 
 bucket_name = "oslo-linkedin-dataengineer-jobs" 
 destination_blob_name = f"jobs_{today}.csv"
 
