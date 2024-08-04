@@ -58,7 +58,7 @@ for job_card in job_cards:
 today = datetime.today().strftime("%d%m%Y")
 df = pd.DataFrame(jobs_data)
 
-csv_file_path = f"/assets/jobs.csv"
+csv_file_path = f"assets/jobs.csv"
 df.to_csv(csv_file_path, index=False, sep=';')
 
 service_account_key = os.getenv('GCP_SECRET')
@@ -81,7 +81,7 @@ nlp = spacy.load('en_core_web_lg')
 
 # Add the EntityRuler to the pipeline and load the patterns from the JSONL file
 ruler = nlp.add_pipe("entity_ruler", before="ner")
-ruler.from_disk("/assets/skills_no_en.jsonl")
+ruler.from_disk("assets/skills_no_en.jsonl")
 
 # Function to extract skills from text
 def get_skills(text):
@@ -97,7 +97,7 @@ df = df.dropna(subset=['description'])
 df = df.drop(columns=['title', 'description'])
 
 # Save the transformed data to a Parquet file
-parquet_file_path = f"/assets/jobs_{today}.parquet"
+parquet_file_path = f"assets/jobs_{today}.parquet"
 df.to_parquet(parquet_file_path, index=False)
 
 # Upload the Parquet file to Google Cloud Storage
