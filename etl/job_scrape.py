@@ -11,7 +11,10 @@ import os
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-list_url = "https://www.linkedin.com/jobs/search/?keywords=Data%20Engineer%20&location=Oslo%2C%20Norway&geoId=105719246&f_TPR=r86400&position=1&pageNum=0"
+# list_url = "https://www.linkedin.com/jobs/search/?keywords=Data%20Engineer%20&location=Oslo%2C%20Norway&geoId=105719246&f_TPR=r2592000&position=1&pageNum=0"
+# list_url = "https://www.linkedin.com/jobs/search/?keywords=Data%20Engineer%20&location=Oslo%2C%20Norway&geoId=105719246&f_TPR=r86400&position=1&pageNum=0"
+list_url = "https://www.linkedin.com/jobs/search?keywords=%22Data%20Engineer%22&location=Oslo&geoId=105719246&f_TPR=r86400&position=1&pageNum=0"
+
 response = requests.get(list_url)
 list_data = response.text
 soup = BeautifulSoup(list_data, 'html.parser')
@@ -55,10 +58,12 @@ for job_card in job_cards:
 
 today = datetime.today().strftime("%d%m%Y")
 df = pd.DataFrame(jobs_data)
-df.to_csv(f"jobs.csv", index=False)
+df = df[df['title'].str.contains("Software")==False]
+df.to_csv(f"../assets/jobs.csv", index=False, sep=';')
 
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"../service-account-details.json" 
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"../../service-account-details.json" 
+
 def upload_blob(bucket_name, source_file_name, destination_blob_name): 
     """Uploads a file to the bucket.""" 
     storage_client = storage.Client() 
@@ -67,8 +72,8 @@ def upload_blob(bucket_name, source_file_name, destination_blob_name):
     blob.upload_from_filename(source_file_name) 
     print( f"File {source_file_name} uploaded to {destination_blob_name}." ) 
     
-source_file_name = ".jobs.csv" 
+source_file_name = "../assets/jobs.csv" 
 bucket_name = "oslo-linkedin-dataengineer-jobs" 
-destination_blob_name = f"jobs_{today}.csv"
+destination_blob_name = f"extracted/jobs_{today}.csv"
 
 upload_blob(bucket_name, source_file_name, destination_blob_name)   
