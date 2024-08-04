@@ -25,7 +25,7 @@ jobs:
         with: 
           name: de_job_etl
           runtime: python38
-          project_id: ornate-reef-332816
+          project_id: mybookdashboard
           event_trigger_type: providers/cloud.pubsub/eventTypes/topic.publish
           event_trigger_resource: projects/ornate-reef-332816/topics/de_job_etl
           source_dir: ./etl/

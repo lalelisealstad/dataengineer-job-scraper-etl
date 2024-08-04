@@ -17,7 +17,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import split
 from pyspark.sql.types import ArrayType, StringType
 import pyspark.sql.functions as F
-
+import os      
 
 # Load the spaCy model
 nlp = spacy.load('en_core_web_lg')
@@ -56,7 +56,7 @@ spark = SparkSession.builder \
     .getOrCreate()
 
 # Set GCS credentials 
-spark._jsc.hadoopConfiguration().set("google.cloud.auth.service.account.json.keyfile", "/Users/elisealstad/code/service-account-details.json")
+spark._jsc.hadoopConfiguration().set("google.cloud.auth.service.account.json.keyfile", os.getenv('GCP_SECRET'))
 
 # Read CSV file from GCS into DataFrame
 df = spark.read.csv(source_gcs_uri, header=True, inferSchema=True, sep = ';')
