@@ -162,5 +162,3 @@ cython_debug/
 #.idea/
 .DS_Store
 .jobs.csv
-jobs.csv
-*.jsonl
