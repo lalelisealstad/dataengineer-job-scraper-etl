@@ -11,7 +11,9 @@ import os
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+# last month
 # list_url = "https://www.linkedin.com/jobs/search/?keywords=Data%20Engineer%20&location=Oslo%2C%20Norway&geoId=105719246&f_TPR=r2592000&position=1&pageNum=0"
+# no ticks
 # list_url = "https://www.linkedin.com/jobs/search/?keywords=Data%20Engineer%20&location=Oslo%2C%20Norway&geoId=105719246&f_TPR=r86400&position=1&pageNum=0"
 list_url = "https://www.linkedin.com/jobs/search?keywords=%22Data%20Engineer%22&location=Oslo&geoId=105719246&f_TPR=r86400&position=1&pageNum=0"
 
