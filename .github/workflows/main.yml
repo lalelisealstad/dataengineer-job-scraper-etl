@@ -1,4 +1,4 @@
-name: convert_kit_etl
+name: dataengineer_job_scraper_etl
 
 on:
   
