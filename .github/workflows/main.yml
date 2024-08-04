@@ -7,16 +7,13 @@ on:
   push: 
     branches: [ main ]
     paths:
-    - "de_job_etl**"
+    - "etl**"
     
 jobs:
-
   build:
-  
     runs-on: ubuntu-latest
     
     steps:
-    
       - uses: actions/checkout@v2
       
       - name: Set up Cloud SDK
