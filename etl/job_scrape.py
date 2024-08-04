@@ -61,8 +61,8 @@ df = pd.DataFrame(jobs_data)
 df = df[df['title'].str.contains("Software")==False]
 df.to_csv(f"../assets/jobs.csv", index=False, sep=';')
 
-
-os.environ['GCP_SA_KEY']
+service_account_key = os.getenv('GCP_SECRET')
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = service_account_key
 
 
 def upload_blob(bucket_name, source_file_name, destination_blob_name): 
