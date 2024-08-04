@@ -62,7 +62,8 @@ df = df[df['title'].str.contains("Software")==False]
 df.to_csv(f"../assets/jobs.csv", index=False, sep=';')
 
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"../../service-account-details.json" 
+os.environ['GCP_SA_KEY']
+
 
 def upload_blob(bucket_name, source_file_name, destination_blob_name): 
     """Uploads a file to the bucket.""" 
