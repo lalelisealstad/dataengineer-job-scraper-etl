@@ -15,7 +15,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.8'
+          python-version: '3.12'
       
       - name: Install dependencies
         run: |
@@ -33,8 +33,8 @@ jobs:
       - name: Deploy
         uses: google-github-actions/deploy-cloud-functions@v2
         with: 
-          name: de_job_etl
-          runtime: python38
+          name: main
+          runtime: python312
           project_id: mybookdashboard
           event_trigger_type: providers/cloud.pubsub/eventTypes/topic.publish
           event_trigger_resource: projects/mybookdashboard/topics/de_job_etl
