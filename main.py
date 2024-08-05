@@ -58,48 +58,36 @@ for job_card in job_cards:
 today = datetime.today().strftime("%d%m%Y")
 df = pd.DataFrame(jobs_data)
 
-csv_file_path = f"assets/jobs.csv"
-df.to_csv(csv_file_path, index=False, sep=';')
+if len(df) > 0:
+    service_account_key = os.getenv('GCP_SECRET')
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = service_account_key
 
-service_account_key = os.getenv('GCP_SECRET')
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = service_account_key
+    # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"../service-account-details.json" 
 
-def upload_blob(bucket_name, source_file_name, destination_blob_name):
-    """Uploads a file to the bucket."""
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(destination_blob_name)
-    blob.upload_from_filename(source_file_name)
-    print(f"File {source_file_name} uploaded to {destination_blob_name}.")
+    file_path_gcp = f"gs://oslo-linkedin-dataengineer-jobs/transformed/jobs_{today}.csv"
 
-bucket_name = "oslo-linkedin-dataengineer-jobs"
-destination_blob_name = f"extracted/jobs_{today}.csv"
-upload_blob(bucket_name, csv_file_path, destination_blob_name)
+    # Load the spaCy model
+    nlp = spacy.load('en_core_web_lg')
 
-# Load the spaCy model
-nlp = spacy.load('en_core_web_lg')
+    # Add the EntityRuler to the pipeline and load the patterns from the JSONL file
+    ruler = nlp.add_pipe("entity_ruler", before="ner")
+    ruler.from_disk("assets/skills_no_en.jsonl")
 
-# Add the EntityRuler to the pipeline and load the patterns from the JSONL file
-ruler = nlp.add_pipe("entity_ruler", before="ner")
-ruler.from_disk("assets/skills_no_en.jsonl")
+    # Function to extract skills from text
+    def get_skills(text):
+        doc = nlp(text)
+        list_skills = [ent.text.lower() for ent in doc.ents if ent.label_ == "SKILL"]
+        return list(set(list_skills))
 
-# Function to extract skills from text
-def get_skills(text):
-    doc = nlp(text)
-    list_skills = [ent.text.lower() for ent in doc.ents if ent.label_ == "SKILL"]
-    return list(set(list_skills))
+    # Apply the get_skills function to the 'description' column
+    df['skills'] = df['description'].apply(get_skills)
 
-# Apply the get_skills function to the 'description' column
-df['skills'] = df['description'].apply(get_skills)
+    # Drop rows with missing values and unnecessary columns
+    df = df.dropna(subset=['description'])
+    df = df.drop(columns=['title', 'description'])
+    
+    df.to_csv(file_path_gcp, index=False, sep=';')
+    logging.info(f"File for {today} added to gcp")
 
-# Drop rows with missing values and unnecessary columns
-df = df.dropna(subset=['description'])
-df = df.drop(columns=['title', 'description'])
-
-# Save the transformed data to a Parquet file
-parquet_file_path = f"assets/jobs_{today}.parquet"
-df.to_parquet(parquet_file_path, index=False)
-
-# Upload the Parquet file to Google Cloud Storage
-destination_parquet_blob_name = f"transformed/jobs_{today}.parquet"
-upload_blob(bucket_name, parquet_file_path, destination_parquet_blob_name)
+else: 
+    logging.info('No new jobs posted in the last 24 h, no new file added')
