@@ -7,4 +7,4 @@ requests
 google-cloud-storage
 spacy
 gcsfs
-pyspark 
+polars 
