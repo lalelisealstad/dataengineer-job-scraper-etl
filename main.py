@@ -101,10 +101,10 @@ def main():
 
         ### Transform dataframe 
         if len(df) > 0:
-            # service_account_key = os.getenv('GCP_SECRET')
-            # os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = service_account_key
+            service_account_key = os.getenv('GCP_SECRET')
+            os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = service_account_key
 
-            os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"../service-account-details.json" 
+            # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"../service-account-details.json" 
 
             file_path_gcp = f"gs://oslo-linkedin-dataengineer-jobs/transformed/jobs_{today}.parquet"
 
