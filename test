@@ -15,4 +15,4 @@ with fs.open(file_path_gcp, 'rb') as f:
     df = pd.read_parquet(f)
 
 # Display the DataFrame
-print(df)
+df.head()
