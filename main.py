@@ -35,7 +35,7 @@ def fetch_job_description(jobid, retry_delay, retries):
         time.sleep(retry_delay)
     return None
 
-def main(): 
+def main(pubsub_message, pubsub_context): 
     
     df = pl.DataFrame(schema={'jobid': pl.String, 'title': pl.String, 'description': pl.String, 'job_type': pl.String})
     
