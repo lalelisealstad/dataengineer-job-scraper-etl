@@ -29,7 +29,6 @@ jobs:
         uses: google-github-actions/auth@v1
         with: 
           credentials_json: ${{ secrets.GCP_SECRET }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
           
       - name: Deploy
         uses: google-github-actions/deploy-cloud-functions@v2
@@ -41,3 +40,5 @@ jobs:
           event_trigger_resource: projects/mybookdashboard/topics/de_job_etl
           timeout: 540
           memory_mb: 1024
+          env_vars: |
+            GOOGLE_APPLICATION_CREDENTIALS=${{ secrets.GCP_SECRET  }}

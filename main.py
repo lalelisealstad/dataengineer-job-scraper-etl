@@ -116,7 +116,8 @@ def main(pubsub_message, pubsub_context):
 
     ################## Transform dataframe ##################
     if len(df) > 0:
-        service_account_key = os.getenv('GCP_SECRET')
+        # service_account_key = os.getenv('GCP_SECRET')
+        service_account_key = os.getenv('credentials_json')
         print(service_account_key)
         
         if service_account_key == None: 
@@ -126,11 +127,15 @@ def main(pubsub_message, pubsub_context):
             os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = service_account_key
         print(os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
         
-        
         file_path_gcp = f"gs://oslo-linkedin-dataengineer-jobs/transformed/jobs_{today}.parquet"
 
         # Load the spaCy model
-        nlp = spacy.load('en_core_web_lg')
+        try: 
+            nlp = spacy.load('en_core_web_lg')
+            print('first nlp')
+        except: 
+            nlp = spacy.load('/workspace/en_core_web_lg')
+            print('second nlp')
 
         # Add the EntityRuler to the pipeline and load the patterns from the JSONL file
         ruler = nlp.add_pipe("entity_ruler", before="ner")
