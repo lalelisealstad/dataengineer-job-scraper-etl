@@ -40,7 +40,9 @@ def fetch_job_description(jobid, retry_delay, retries):
 
 def main(pubsub_message, pubsub_context): 
     
-    job_title = pubsub_message['job_type']
+    job_title = pubsub_message.get_json(silent = True)
+    job_title = job_title.args['job_type']
+    print(pubsub_message, job_title)
     
     df = pl.DataFrame(schema={'jobid': pl.String, 'title': pl.String, 'description': pl.String, 'job_type': pl.String})
     
