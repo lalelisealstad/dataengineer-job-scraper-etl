@@ -10,6 +10,9 @@ import spacy
 from spacy.pipeline import EntityRuler
 import gcsfs
 import re
+import urllib
+import subprocess
+import sys
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -36,10 +39,29 @@ def fetch_job_description(jobid, retry_delay, retries):
 
 def main(pubsub_message, pubsub_context): 
     
+    
+    ### Download scpay first to avoid too many unused requests: 
+    try:
+        subprocess.run(["python", "-m", "spacy", "download", "en_core_web_lg"], check=True)
+        logging.info("spaCy model downloaded successfully.")
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Error downloading spaCy model: {e}")
+        return
+    
+    # Load the spaCy model
+    try: 
+        nlp = spacy.load('en_core_web_lg')
+        print('first nlp')
+    except: 
+        nlp = spacy.load('/workspace/en_core_web_lg')
+        print('second nlp')
+    
+    ##############################################################
     # Receive job_title to search for from pub sub message from Cloud Scheduler 
     # job_titles = ["Data%20Engineer", "Data%20Scientist", "Data%20Analyst"]. adding the %20 as this is used as space in the url 
+    
     job_title = "Data%20Engineer"
-    # print(pubsub_message)
+    # # print(pubsub_message)
     # if 'data' not in pubsub_message:
     #     logging.warning('No data field found in the message. End process')
     #     return
@@ -117,25 +139,17 @@ def main(pubsub_message, pubsub_context):
     ################## Transform dataframe ##################
     if len(df) > 0:
         # service_account_key = os.getenv('GCP_SECRET')
-        service_account_key = os.getenv('credentials_json')
-        print(service_account_key)
+        # service_account_key = os.getenv('credentials_json')
+        # print(service_account_key)
         
-        if service_account_key == None: 
-        # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"../service-account-details.json" 
-            os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "gha-creds-5f7f9145a70ffc6b.json"
-        else: 
-            os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = service_account_key
-        print(os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
+        # if service_account_key == None: 
+        # # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"../service-account-details.json" 
+        #     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "gha-creds-5f7f9145a70ffc6b.json"
+        # else: 
+        #     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = service_account_key
+        # print(os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
         
         file_path_gcp = f"gs://oslo-linkedin-dataengineer-jobs/transformed/jobs_{today}.parquet"
-
-        # Load the spaCy model
-        try: 
-            nlp = spacy.load('en_core_web_lg')
-            print('first nlp')
-        except: 
-            nlp = spacy.load('/workspace/en_core_web_lg')
-            print('second nlp')
 
         # Add the EntityRuler to the pipeline and load the patterns from the JSONL file
         ruler = nlp.add_pipe("entity_ruler", before="ner")
