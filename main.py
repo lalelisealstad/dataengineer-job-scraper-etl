@@ -38,8 +38,6 @@ def fetch_job_description(jobid, retry_delay, retries):
     return None
 
 def main(pubsub_message, pubsub_context): 
-# def main():    
-
     ### Download scpay first to avoid too many unused requests: 
     # Load the spaCy model
     try: 
@@ -50,23 +48,8 @@ def main(pubsub_message, pubsub_context):
         print('second nlp')
     
     ##############################################################
-    # Receive job_title to search for from pub sub message from Cloud Scheduler 
-    # job_titles = ["Data%20Engineer", "Data%20Scientist", "Data%20Analyst"]. adding the %20 as this is used as space in the url 
-    
+ 
     job_title = "Data%20Engineer"
-    # # print(pubsub_message)
-    # if 'data' not in pubsub_message:
-    #     logging.warning('No data field found in the message. End process')
-    #     return
-
-    # # Check if 'attributes' and 'job_title' exist in the message
-    # if 'attributes' in pubsub_message and 'job_title' in pubsub_message['attributes']:
-    #     job_title_encoded = pubsub_message['attributes']['job_title']
-    #     job_title = urllib.parse.unquote(job_title_encoded)
-    #     job_title_found = True
-    #     logging.info(f"Received job title: {job_title} from pubsub message by cloud scheduler: {pubsub_message}")
-    # else:
-    #     logging.warning('No job_title attribute found in the message attributes. End process')
 
     df = pl.DataFrame(schema={'jobid': pl.String, 'title': pl.String, 'description': pl.String, 'job_type': pl.String})
     
@@ -131,16 +114,6 @@ def main(pubsub_message, pubsub_context):
 
     ################## Transform dataframe ##################
     if len(df) > 0:
-        # service_account_key = os.getenv('GCP_SECRET')
-        # service_account_key = os.getenv('credentials_json')
-        # print(service_account_key)
-        
-        # if service_account_key == None: 
-        # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"../service-account-details.json" 
-        #     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "gha-creds-5f7f9145a70ffc6b.json"
-        # else: 
-        #     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = service_account_key
-        # print(os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
 
         # Add the EntityRuler to the pipeline and load the patterns from the JSONL file
         ruler = nlp.add_pipe("entity_ruler", before="ner")
