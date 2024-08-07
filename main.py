@@ -37,17 +37,10 @@ def fetch_job_description(jobid, retry_delay, retries):
         time.sleep(retry_delay)
     return None
 
-def main(pubsub_message, pubsub_context): 
-    
-    
+# def main(pubsub_message, pubsub_context): 
+def main():    
+
     ### Download scpay first to avoid too many unused requests: 
-    try:
-        subprocess.run(["python", "-m", "spacy", "download", "en_core_web_lg"], check=True)
-        logging.info("spaCy model downloaded successfully.")
-    except subprocess.CalledProcessError as e:
-        logging.error(f"Error downloading spaCy model: {e}")
-        return
-    
     # Load the spaCy model
     try: 
         nlp = spacy.load('en_core_web_lg')
@@ -105,7 +98,7 @@ def main(pubsub_message, pubsub_context):
                 # get description for each job posting in the page
                 jobs_data = []
                 # Get first 25 jobs only 
-                for job_card in job_cards[:25]: 
+                for job_card in job_cards[:2]: 
                     data_entity_urn = job_card.get('data-entity-urn')
                     if data_entity_urn:
                         jobid = data_entity_urn.split(':')[-1]
@@ -143,13 +136,11 @@ def main(pubsub_message, pubsub_context):
         # print(service_account_key)
         
         # if service_account_key == None: 
-        # # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"../service-account-details.json" 
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"../service-account-details.json" 
         #     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "gha-creds-5f7f9145a70ffc6b.json"
         # else: 
         #     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = service_account_key
         # print(os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
-        
-        file_path_gcp = f"gs://oslo-linkedin-dataengineer-jobs/transformed/jobs_{today}.parquet"
 
         # Add the EntityRuler to the pipeline and load the patterns from the JSONL file
         ruler = nlp.add_pipe("entity_ruler", before="ner")
@@ -193,7 +184,12 @@ def main(pubsub_message, pubsub_context):
         )
         df.drop(['title', 'description'])
         
+        
+        ############### Load data in gcs #############
+        
         # store file in gcp
+        file_path_gcp = f"gs://oslo-linkedin-dataengineer-jobs/transformed/jobs_{today}.parquet"
+        
         fs = gcsfs.GCSFileSystem()
         with fs.open(file_path_gcp, mode='wb') as f:
             df.write_parquet(f)
