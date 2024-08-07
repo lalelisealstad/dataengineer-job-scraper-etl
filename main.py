@@ -120,9 +120,10 @@ def main(pubsub_message, pubsub_context):
 
         ################## Transform dataframe ##################
         if len(df) > 0:
-            print(service_account_key)
             service_account_key = os.getenv('GCP_SECRET')
+            print(service_account_key)
             os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = service_account_key
+            
 
             # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"../service-account-details.json" 
 
