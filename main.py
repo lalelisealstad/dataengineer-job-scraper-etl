@@ -37,8 +37,8 @@ def fetch_job_description(jobid, retry_delay, retries):
         time.sleep(retry_delay)
     return None
 
-# def main(pubsub_message, pubsub_context): 
-def main():    
+def main(pubsub_message, pubsub_context): 
+# def main():    
 
     ### Download scpay first to avoid too many unused requests: 
     # Load the spaCy model
@@ -136,7 +136,7 @@ def main():
         # print(service_account_key)
         
         # if service_account_key == None: 
-        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"../service-account-details.json" 
+        # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"../service-account-details.json" 
         #     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "gha-creds-5f7f9145a70ffc6b.json"
         # else: 
         #     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = service_account_key
