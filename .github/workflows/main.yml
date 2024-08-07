@@ -29,6 +29,7 @@ jobs:
         uses: google-github-actions/auth@v1
         with: 
           credentials_json: ${{ secrets.GCP_SECRET }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
           
       - name: Deploy
         uses: google-github-actions/deploy-cloud-functions@v2
