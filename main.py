@@ -122,7 +122,7 @@ def main(pubsub_message, pubsub_context):
         service_account_key = os.getenv('GCP_SECRET')
         print(service_account_key)
         
-        if service_account_key = None: 
+        if service_account_key == None: 
         # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"../service-account-details.json" 
             os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "gha-creds-5f7f9145a70ffc6b.json"
         else: 
