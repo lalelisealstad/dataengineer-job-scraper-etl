@@ -10,8 +10,8 @@ import spacy
 from spacy.pipeline import EntityRuler
 import gcsfs
 import re
-import base64
-import json
+import urllib.parse
+
 
 
 # Set up logging
@@ -42,23 +42,19 @@ def main(pubsub_message, pubsub_context):
     # Receive job_title to search for from pub sub message from Cloud Scheduler 
     # job_titles = ["Data%20Engineer", "Data%20Scientist", "Data%20Analyst"]. adding the %20 as this is used as space in the url 
     
-    if 'data' in pubsub_message:
-        pubsub_message = base64.b64decode(pubsub_message['data']).decode('utf-8')
-        message_data = json.loads(pubsub_message)
-        
-        # Access the job_title attribute
-        if 'attributes' in pubsub_message and 'job_title' in pubsub_message['attributes']:
-            job_title = pubsub_message['attributes']['job_title']
-            job_title = base64.b64decode(job_title).decode('utf-8')
-            job_title_found = True
-            
-            # Log the received job title
-            logging.info(f"Received job title: {job_title} from pubsub message by cloud scheduler: {pubsub_message}")
-        else:
-            job_title_found = False
-            logging.warning('No job_title attribute found in the message attributes.End process')
-    else:
+    print(pubsub_message)
+    if 'data' not in pubsub_message:
         logging.warning('No data field found in the message. End process')
+        return
+
+    # Check if 'attributes' and 'job_title' exist in the message
+    if 'attributes' in pubsub_message and 'job_title' in pubsub_message['attributes']:
+        job_title_encoded = pubsub_message['attributes']['job_title']
+        job_title = urllib.parse.unquote(job_title_encoded)
+        job_title_found = True
+        logging.info(f"Received job title: {job_title} from pubsub message by cloud scheduler: {pubsub_message}")
+    else:
+        logging.warning('No job_title attribute found in the message attributes. End process')
     
     if job_title_found == True:
         df = pl.DataFrame(schema={'jobid': pl.String, 'title': pl.String, 'description': pl.String, 'job_type': pl.String})
@@ -174,6 +170,7 @@ def main(pubsub_message, pubsub_context):
                 .otherwise(None)
                 .alias("seniority")
             )
+            df.drop(['title', 'description'])
             
             # store file in gcp
             fs = gcsfs.GCSFileSystem()
