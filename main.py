@@ -169,7 +169,7 @@ def main(pubsub_message, pubsub_context):
                 .alias("seniority")
             )
             
-            df = df.with_column(pl.lit(datetime.today()).alias("date"))
+            df = df.with_columns(pl.lit(datetime.today()).alias("date"))
             
             df = df.drop(['title', 'description'])
             
