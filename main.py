@@ -53,7 +53,7 @@ def main(pubsub_message, pubsub_context):
     except: 
         import os
 
-        os.system("python -m spacy download en_core_web_sm")
+        os.system("python -m spacy download en_core_web_lg")
         nlp = spacy.load("en_core_web_lg")
         print('third nlp')
         
