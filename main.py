@@ -177,7 +177,7 @@ def main(pubsub_message, pubsub_context):
             ############### Load data in gcs #############
             
             # store file in gcp
-            file_path_gcp = f"gs://oslo-linkedin-dataengineer-jobs/transformed/jobs_{today}.parquet"
+            file_path_gcp = f"gs://oslo-linkedin-dataengineer-jobs/transformed/{job_title}_jobs_{today}.parquet"
             
             fs = gcsfs.GCSFileSystem()
             with fs.open(file_path_gcp, mode='wb') as f:
