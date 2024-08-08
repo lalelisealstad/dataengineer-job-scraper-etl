@@ -5,14 +5,14 @@ import time
 import logging
 from datetime import datetime
 from google.cloud import storage
-import os
+# import os
 import spacy
 from spacy.pipeline import EntityRuler
 import gcsfs
 import re
-import urllib
-import subprocess
-import sys
+# import urllib
+# import subprocess
+# import sys
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -38,15 +38,25 @@ def fetch_job_description(jobid, retry_delay, retries):
     return None
 
 def main(pubsub_message, pubsub_context): 
+# def main():
+#     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"../service-account-details.json" 
     ### Download scpay first to avoid too many unused requests: 
     # Load the spaCy model
     try: 
-        nlp = spacy.load('en_core_web_lg')
-        print('first nlp')
+        import en_core_web_lg
+        try: 
+            nlp = en_core_web_lg.load( )
+            print('first nlp')
+        except: 
+            nlp = en_core_web_lg.load( )
+            print('second nlp')
     except: 
-        nlp = spacy.load('/workspace/en_core_web_lg')
-        print('second nlp')
-    
+        import os
+
+        os.system("python -m spacy download en_core_web_sm")
+        nlp = spacy.load("en_core_web_lg")
+        print('third nlp')
+        
     ##############################################################
  
     job_title = "Data%20Engineer"
