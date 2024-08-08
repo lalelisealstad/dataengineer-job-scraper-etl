@@ -1,11 +1,9 @@
 # Data Engineer Job Scraper ETL
 
-try to add service_account_key: ${{ secrets.GCP_SA_KEY } to script? maybe it is not necessary to set vars there
-
-This repository contains the source code for a data pipeline that automatically scrapes Data Engineer job postings every night using Google Cloud Platform (GCP) tools: Cloud Scheduler, Pub/Sub, Cloud Functions, and Cloud Storage. The program collects job descriptions for positions in Oslo, Norway posted in the last 24 hours and uses the spaCy NLP package to extract words describing "skills" needed for the positions. The purpose of the pipeline is to analyze in-demand skills for data engineering positions. A dashboard to visualize the results will be created in another repository.
+This repository contains the source code for a data pipeline that automatically scrapes Data Engineer, Data Scientist and Data Analyst job postings every night using Google Cloud Platform (GCP) tools: Cloud Scheduler, Pub/Sub, Cloud Functions, and Cloud Storage. The program collects job descriptions for positions in London, UK posted in the last 24 hours and uses the spaCy NLP package to extract words describing "skills" needed for the positions. The purpose of the pipeline is to analyze in-demand skills for data jobs. A dashboard to visualize the results will be created in another repository.
 
 #### Deployment Notes:
-The program is deployed in Cloud Functions using GitHub Actions. It is triggered daily by a Pub/Sub message from Cloud Scheduler at 23:00 CET.
+The program is deployed in Cloud Functions using GitHub Actions. It is triggered daily by Pub/Sub messages with the search term (Data Engineer, Data Scientist and Data Analyst) from Cloud Scheduler.
 
 #### Development Notes:
 To run the program for the first time:
