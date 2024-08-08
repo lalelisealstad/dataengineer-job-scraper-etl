@@ -23,7 +23,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Download spaCy model
-        run: python -m spacy download en_core_web_lg
+        run: python -m spacy download en_core_web_lg --target .
       
       - name: auth
         uses: google-github-actions/auth@v1
