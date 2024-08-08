@@ -39,23 +39,18 @@ def fetch_job_description(jobid, retry_delay, retries):
 
 def main(pubsub_message, pubsub_context): 
 # def main():
+#     import os 
 #     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"../service-account-details.json" 
-    ### Download scpay first to avoid too many unused requests: 
+#     ### Download scpay first to avoid too many unused requests: 
     # Load the spaCy model
+    import en_core_web_sm
     try: 
-        import en_core_web_lg
-        try: 
-            nlp = en_core_web_lg.load( )
-            print('first nlp')
-        except: 
-            nlp = en_core_web_lg.load( )
-            print('second nlp')
+        nlp = en_core_web_sm.load( )
+        print('first nlp')
     except: 
-        import os
-
-        os.system("python -m spacy download en_core_web_lg")
-        nlp = spacy.load("en_core_web_lg")
-        print('third nlp')
+        nlp = en_core_web_sm.load( )
+        print('second nlp')
+  
         
     ##############################################################
  
