@@ -10,6 +10,7 @@ from spacy.pipeline import EntityRuler
 import gcsfs
 import re
 import urllib
+import random
 
 
 # Set up logging
@@ -75,7 +76,7 @@ def main(pubsub_message, pubsub_context):
         list_url = f"https://www.linkedin.com/jobs/search?keywords=%22{job_title}%22&location=London%20Area%2C%20United%20Kingdom&geoId=90009496&f_TPR=r86400&position=1&pageNum=0"
 
         df = pl.DataFrame(schema={'jobid': pl.String, 'title': pl.String, 'description': pl.String, 'job_type': pl.String})
-        max_retries = 4
+        max_retries = 5
         retry_delay = 3  # seconds
 
         for attempt in range(max_retries):
@@ -119,7 +120,7 @@ def main(pubsub_message, pubsub_context):
             except requests.RequestException as e:
                 print(f"Attempt {attempt + 1} failed: {e}")
                 if attempt < max_retries - 1:
-                    time.sleep(retry_delay)
+                    time.sleep(random.randint(2,12))
         else:
             logging.warning(f"Failed to retrieve job cards for {job_title} after {max_retries} attempts. end process for job title")
 
